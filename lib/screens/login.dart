@@ -45,7 +45,7 @@ class AuthPage extends StatelessWidget {
                       JoinOrLogin joinOrLogin = Provider.of<JoinOrLogin>(context, listen: false);
                       joinOrLogin.toggle();
                     },
-                    child: Text('Sign Up',
+                    child: Text(joinOrLogin.isJoin? 'Already Have an Account? Sign In' : 'Sign Up',
                       style: TextStyle(color: joinOrLogin.isJoin?Colors.red:Colors.blue))
                   ),
                 ),
@@ -78,16 +78,19 @@ class AuthPage extends StatelessWidget {
       bottom: 0,
       child: SizedBox(
         height: 50,
-        child: RaisedButton(
-          child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 20)),
-          color: Colors.blue,
-          onPressed: () => {
-            if (_formKey.currentState!.validate()) {
-              print("button pressed")
-            }
-          },
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+        child: Consumer<JoinOrLogin>(
+          builder: (context, joinOrLogin,child) =>
+            RaisedButton(
+            child: Text(joinOrLogin.isJoin ? "Join" : "Login", style: TextStyle(color: Colors.white, fontSize: 20)),
+            color: joinOrLogin.isJoin ? Colors.red : Colors.blue,
+            onPressed: () => {
+              if (_formKey.currentState!.validate()) {
+                print("button pressed")
+              }
+            },
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         ),
       ),
@@ -135,9 +138,16 @@ class AuthPage extends StatelessWidget {
                   },
                 ),
                 Container(height: 18,),
-                Text("Forgot Password"),
+                Consumer<JoinOrLogin>(
+                  builder: (context, joinOrLogin, child) =>
+                    Opacity(
+                        opacity: joinOrLogin.isJoin ? 0 : 1.0,
+                        child: Text("Forgot Password")
+                    ),
+                )
               ],
-            ),),
+            ),
+          ),
         ),
       ),
     );
