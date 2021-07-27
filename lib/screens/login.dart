@@ -1,7 +1,8 @@
+import 'package:firebase_app/data/join_or_login.dart';
 import 'package:firebase_app/helper/login_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class AuthPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -21,7 +22,7 @@ class AuthPage extends StatelessWidget {
           children: [
             CustomPaint(
               size: size,
-              painter: LoginBackground()
+              painter: LoginBackground(isJoin: Provider.of<JoinOrLogin>(context).isJoin)
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -37,7 +38,17 @@ class AuthPage extends StatelessWidget {
                   ],
                 ),
                 Container(height: size.height * 0.05),
-                Text('Sign Up'),
+                Consumer<JoinOrLogin>(
+                  builder: (context, joinOrLogin, child) =>
+                    GestureDetector(
+                    onTap: () {
+                      JoinOrLogin joinOrLogin = Provider.of<JoinOrLogin>(context, listen: false);
+                      joinOrLogin.toggle();
+                    },
+                    child: Text('Sign Up',
+                      style: TextStyle(color: joinOrLogin.isJoin?Colors.red:Colors.blue))
+                  ),
+                ),
                 Container(height: size.height * 0.05),
               ],
             )
